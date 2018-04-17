@@ -58,11 +58,11 @@ function myTweets() {
             console.log(error);
         } else {
             for (var i = 0; i < tweets.length; i++) {
-                console.log("Panda_Gamal: " + tweets[i].text + "\nTweet Created: " + tweets[i].created_at + "\n");
+                console.log("\nPanda_Gamal: " + tweets[i].text + "\nTweet Created: " + tweets[i].created_at + "\n");
             }
         }
     });
-}
+};
 
 function spotifySong(song) {
     if (song === "") {
@@ -72,7 +72,8 @@ function spotifySong(song) {
                 console.log("\nArtist: " + data.artists[0].name +
                     "\nSong title: " + data.name +
                     "\nAlbum name: " + data.album.name +
-                    "\nURL Preview: " + data.preview_url);
+                    "\nURL Preview: " + data.preview_url + "\n"
+                );
             })
             .catch(function (err) {
                 console.error('Error occurred: ' + err);
@@ -85,17 +86,38 @@ function spotifySong(song) {
                 console.log("\nArtist: " + info[0].artists[0].name +
                     "\nSong title: " + info[0].name +
                     "\nAlbum name: " + info[0].album.name +
-                    "\nURL Preview: " + info[0].preview_url);
+                    "\nURL Preview: " + info[0].preview_url + "\n"
+                );
             })
             .catch(function (err) {
                 console.log(err);
             });
     }
-}
+};
 
 function movieThis(movie) {
-
-}
+    var movieName = "";
+    if (movie === "") {
+        movieName = "Mr+Nobody";
+    } else {
+        movieName = String(movie);
+    }
+    var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
+    request(queryUrl, function (error, response, body) {
+        if (!error && response.statusCode === 200) {
+            var info = JSON.parse(body);
+            console.log("\nMovie Title: " + info.Title +
+                "\nYear Released: " + info.Year +
+                "\nIMDB Rating: " + info.imdbRating +
+                "\nRotten Tomatoes Rating: " + info.Ratings[1].Value +
+                "\nCountry Produced: " + info.Country +
+                "\nLanguage: " + info.Language +
+                "\nPlot: " + info.Plot +
+                "\nActors: " + info.Actors + "\n"
+            );
+        }
+    });
+};
 
 function doWhatItSays() {
     fs.readFile("random.txt", "utf8", function (error, data) {
