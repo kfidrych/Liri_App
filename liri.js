@@ -14,14 +14,14 @@ inquirer.prompt([
         type: "list",
         name: "command",
         message: "What would you like to do?",
-        choices: ["my-tweets", "spotify-this-song", "movie-this", "do-what-it-says"]
+        choices: ["Read my Tweets", "Spotify a Song", "Pull Movie Information", "Do What It Says"]
     }
 ]).then(function (response) {
     switch (response.command) {
-        case "my-tweets":
+        case "Read my Tweets":
             myTweets();
             break;
-        case "spotify-this-song":
+        case "Spotify a Song":
             inquirer.prompt([
                 {
                     type: "input",
@@ -33,7 +33,7 @@ inquirer.prompt([
                 spotifySong(userSong);
             });
             break;
-        case "movie-this":
+        case "Pull Movie Information":
             inquirer.prompt([
                 {
                     type: "input",
@@ -45,7 +45,7 @@ inquirer.prompt([
                 movieThis(userMovie);
             });
             break;
-        case "do-what-it-says":
+        case "Do What It Says":
             doWhatItSays();
             break;
     };
@@ -58,7 +58,11 @@ function myTweets() {
             console.log(error);
         } else {
             for (var i = 0; i < tweets.length; i++) {
-                console.log("\nPanda_Gamal: " + tweets[i].text + "\nTweet Created: " + tweets[i].created_at + "\n");
+                var logTweetText = ("\nPanda_Gamal: " + tweets[i].text + "\nTweet Created: " + tweets[i].created_at + "\n");
+                console.log(logTweetText);
+                fs.appendFile("log.txt", "['Command: my-tweets', '" + logTweetText + "']\n", function (err) {
+                    if (err) throw err;
+                })
             }
         }
     });
@@ -69,11 +73,15 @@ function spotifySong(song) {
         spotify
             .request('https://api.spotify.com/v1/tracks/3DYVWvPh3kGwPasp7yjahc')
             .then(function (data) {
-                console.log("\nArtist: " + data.artists[0].name +
+                var logSpotifyText = ("\nArtist: " + data.artists[0].name +
                     "\nSong title: " + data.name +
                     "\nAlbum name: " + data.album.name +
                     "\nURL Preview: " + data.preview_url + "\n"
                 );
+                console.log(logSpotifyText);
+                fs.appendFile("log.txt", "['Command: spotify-this-song', '" + logSpotifyText + "']\n", function (err) {
+                    if (err) throw err;
+                })
             })
             .catch(function (err) {
                 console.error('Error occurred: ' + err);
@@ -83,11 +91,15 @@ function spotifySong(song) {
             .search({ type: 'track', query: song })
             .then(function (response) {
                 var info = response.tracks.items;
-                console.log("\nArtist: " + info[0].artists[0].name +
+                var logSpotifyText = ("\nArtist: " + info[0].artists[0].name +
                     "\nSong title: " + info[0].name +
                     "\nAlbum name: " + info[0].album.name +
                     "\nURL Preview: " + info[0].preview_url + "\n"
                 );
+                console.log(logSpotifyText);
+                fs.appendFile("log.txt", "['Command: spotify-this-song', '" + logSpotifyText + "']\n", function (err) {
+                    if (err) throw err;
+                })
             })
             .catch(function (err) {
                 console.log(err);
@@ -106,7 +118,7 @@ function movieThis(movie) {
     request(queryUrl, function (error, response, body) {
         if (!error && response.statusCode === 200) {
             var info = JSON.parse(body);
-            console.log("\nMovie Title: " + info.Title +
+            var logMovieText = ("\nMovie Title: " + info.Title +
                 "\nYear Released: " + info.Year +
                 "\nIMDB Rating: " + info.imdbRating +
                 "\nRotten Tomatoes Rating: " + info.Ratings[1].Value +
@@ -115,6 +127,10 @@ function movieThis(movie) {
                 "\nPlot: " + info.Plot +
                 "\nActors: " + info.Actors + "\n"
             );
+            console.log(logMovieText);
+            fs.appendFile("log.txt", "['Command: movie-this', '" + logMovieText + "']\n", function (err) {
+                if (err) throw err;
+            })
         }
     });
 };
@@ -122,6 +138,9 @@ function movieThis(movie) {
 function doWhatItSays() {
     fs.readFile("random.txt", "utf8", function (error, data) {
         console.log(data);
+        fs.appendFile("log.txt", "['Command: do-what-it-says', '" + data + "']\n", function (err) {
+            if (err) throw err;
+        })
         spotifySong(data);
     });
 };
