@@ -57,15 +57,40 @@ function myTweets() {
         if (error) {
             console.log(error);
         } else {
-            for (var i=0; i<tweets.length; i++) {
-                console.log("Panda_Gamal: " + tweets[i].text + "\nTweet Created: " + tweets[i].created_at);
+            for (var i = 0; i < tweets.length; i++) {
+                console.log("Panda_Gamal: " + tweets[i].text + "\nTweet Created: " + tweets[i].created_at + "\n");
             }
         }
     });
 }
 
 function spotifySong(song) {
-
+    if (song === "") {
+        spotify
+            .request('https://api.spotify.com/v1/tracks/3DYVWvPh3kGwPasp7yjahc')
+            .then(function (data) {
+                console.log("\nArtist: " + data.artists[0].name +
+                    "\nSong title: " + data.name +
+                    "\nAlbum name: " + data.album.name +
+                    "\nURL Preview: " + data.preview_url);
+            })
+            .catch(function (err) {
+                console.error('Error occurred: ' + err);
+            });
+    } else {
+        spotify
+            .search({ type: 'track', query: song })
+            .then(function (response) {
+                var info = response.tracks.items;
+                console.log("\nArtist: " + info[0].artists[0].name +
+                    "\nSong title: " + info[0].name +
+                    "\nAlbum name: " + info[0].album.name +
+                    "\nURL Preview: " + info[0].preview_url);
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    }
 }
 
 function movieThis(movie) {
