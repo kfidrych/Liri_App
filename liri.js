@@ -9,6 +9,7 @@ var fs = require("fs");
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
+// Create command line UI with list of actions for Liri
 inquirer.prompt([
     {
         type: "list",
@@ -17,11 +18,13 @@ inquirer.prompt([
         choices: ["Read my Tweets", "Spotify a Song", "Pull Movie Information", "Do What It Says"]
     }
 ]).then(function (response) {
+    // Switch Case for all available actions in Liri
     switch (response.command) {
         case "Read my Tweets":
             myTweets();
             break;
         case "Spotify a Song":
+        // Secondary prompt for what song to search in Spotify
             inquirer.prompt([
                 {
                     type: "input",
@@ -34,6 +37,7 @@ inquirer.prompt([
             });
             break;
         case "Pull Movie Information":
+        // Secondary prompt for what movie to search in OMDB
             inquirer.prompt([
                 {
                     type: "input",
@@ -51,6 +55,7 @@ inquirer.prompt([
     };
 });
 
+// Function to pull Tweets from Twitter package and TwitterAPI
 function myTweets() {
     var params = { screen_name: 'panda_gamal' };
     client.get('statuses/user_timeline', params, function (error, tweets, response) {
@@ -68,7 +73,9 @@ function myTweets() {
     });
 };
 
+// Function to pull Spotify information for song searched with Spotify package and Spotify API
 function spotifySong(song) {
+    // Default response if no user input
     if (song === "") {
         spotify
             .request('https://api.spotify.com/v1/tracks/3DYVWvPh3kGwPasp7yjahc')
@@ -87,6 +94,7 @@ function spotifySong(song) {
                 console.error('Error occurred: ' + err);
             });
     } else {
+        // Response with user input
         spotify
             .search({ type: 'track', query: song })
             .then(function (response) {
@@ -107,8 +115,10 @@ function spotifySong(song) {
     }
 };
 
+// Function to pull movie information from movie searched with OMDB API 
 function movieThis(movie) {
     var movieName = "";
+    // Default response if no user input then with user input
     if (movie === "") {
         movieName = "Mr+Nobody";
     } else {
